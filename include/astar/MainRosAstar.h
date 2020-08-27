@@ -23,17 +23,16 @@ using  namespace Eigen;
 
 class MainRosAstar{
 public:
-    ros::Publisher coverageAreaPub,pathPub,costmapPub,testmapPub;
+    MainRosAstar(int argc,char ** argv);
+
+private:
+    ros::Publisher coverageAreaPub,pathPub,costmapPub,testmapPub, initial_marker_pub, goal_marker_pub;
     ros::Subscriber mapSub,move_base_goalSub, initialSub;
     ros::NodeHandle *nh;
     OccMap * occmap;
     Astar *astar;
-//    static Eigen::Vector2f initialPose;
 
-    MainRosAstar(int argc,char ** argv);
-
-    void setStartPoint(Vector2f s);
-    void setStartPoint();
+public:
     void mapCallBack(nav_msgs::OccupancyGridConstPtr map);
     void initialCallBack(const geometry_msgs::PoseWithCovarianceStampedConstPtr& initial);
     void goalCallBack( geometry_msgs::PoseStampedConstPtr ps);

@@ -108,7 +108,7 @@ bool Astar::solve(ros::Publisher coverageAreaPub){
         node->Visted=true;
         openSet.erase(openSet.begin());
         if(node==goalNode){
-            cout<<"path find!"<<endl;
+            cout<<"path  found !"<<endl;
             return true;
         }
         auto neighbors=getNeighbor(node);
