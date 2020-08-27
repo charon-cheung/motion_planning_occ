@@ -10,6 +10,7 @@
 #include <visualization_msgs/MarkerArray.h>
 #include <visualization_msgs/Marker.h>
 #include <geometry_msgs/PointStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <Eigen/Core>
 #include <array>
 #include <random>

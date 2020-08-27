@@ -26,7 +26,7 @@ public:
 public:
     Astar(int r,GraphSerachMethod meth);
     void InitMap(OccMap *m,ros::Publisher testmapPub);
-    void setStart(Vector2f s){start=s;};
+    void setStart(Vector2f s){  start=s; };
     void InitStart();
     void setGoal(Vector2f goal);
     float getHeuristic(Node::Ptr p1,Node::Ptr p2);

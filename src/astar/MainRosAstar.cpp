@@ -1,36 +1,45 @@
-//
-// Created by unicorn on 2019/12/28.
-//
-
 #include "astar/MainRosAstar.h"
 
-MainRosAstar::MainRosAstar(int argc,char ** argv){
+Eigen::Vector2f initialPose(0,0);
+
+
+MainRosAstar::MainRosAstar(int argc,char ** argv)
+{
     astar=new Astar(20,ASTAR_M);
     occmap=new OccMap(0.05,0.2);
+
     ros::init(argc,argv,"astar");
     nh=new ros::NodeHandle("~");
     coverageAreaPub= nh->advertise<visualization_msgs::Marker>("/coverageArea",1);
     pathPub= nh->advertise<visualization_msgs::Marker>("/path",1);
     costmapPub=nh->advertise<visualization_msgs::Marker>("/costmap",1);
     testmapPub=nh->advertise<visualization_msgs::Marker>("/testmap",1);
+    initialSub = nh->subscribe("/initialpose",10, &MainRosAstar::initialCallBack, this);
     mapSub=nh->subscribe("/map",10,&MainRosAstar::mapCallBack,this);
     move_base_goalSub=nh->subscribe("/move_base_simple/goal",10,&MainRosAstar::goalCallBack,this);
-
 }
 
 void MainRosAstar::setStartPoint(Vector2f s){
     astar->setStart(s);
 }
 
+void MainRosAstar::initialCallBack(const geometry_msgs::PoseWithCovarianceStampedConstPtr& initial)
+{
+    initialPose << initial->pose.pose.position.x, initial->pose.pose.position.y;
+    cout << "inital : "<< initialPose.transpose()<<endl;
+    astar->setStart(initialPose);
+    astar->InitStart();
+}
+
 void MainRosAstar::mapCallBack(nav_msgs::OccupancyGridConstPtr map){
     occmap->setMap(map);
     astar->InitMap(occmap,testmapPub);
-    astar->InitStart();
     vis_costmap(occmap,costmapPub);
 }
 
-void MainRosAstar::goalCallBack(geometry_msgs::PoseStampedConstPtr ps){
-    cout<<"goal is"<<Vector2f(ps->pose.position.x,ps->pose.position.y).transpose()<<endl;
+void MainRosAstar::goalCallBack(geometry_msgs::PoseStampedConstPtr ps)
+{
+    cout<<"goal : "<<Vector2f(ps->pose.position.x,ps->pose.position.y).transpose()<<endl;
     astar->vistedArea.clear();
     astar->setGoal(Vector2f(ps->pose.position.x,ps->pose.position.y));
     if(astar->goalNode->isObstacle){

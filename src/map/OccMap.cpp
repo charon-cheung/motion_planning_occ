@@ -1,8 +1,6 @@
-//
-// Created by unicorn on 2019/12/27.
-//
 #include <map/OccMap.h>
-void OccMap::setMap(nav_msgs::OccupancyGridConstPtr map){
+void OccMap::setMap(nav_msgs::OccupancyGridConstPtr map)
+{
     height_=map->info.height;
     width_=map->info.width;
     res_=map->info.resolution;
